@@ -4,6 +4,16 @@ import { isStaff } from "../../utils/isStaff"
 import { getAllEmployees } from "../../managers/EmployeeManager"
 import { getTicketById, deleteTicket, updateTicket } from "../../managers/TicketManager"
 
+export const ticketStatus = (ticket) => {
+  if (ticket.date_completed === null) {
+    if (ticket.employee) {
+      return <span className="status--in-progress">In progress</span>
+    }
+    return <span className="status--new">Unclaimed</span>
+  }
+  return <span className="status--completed">Done</span>
+}
+
 export const Ticket = () => {
   const [ticket, setTicket] = useState({})
   const [employees, setEmployees] = useState([])
@@ -41,16 +51,6 @@ export const Ticket = () => {
     updateTicket(updatedTicket).then(() => fetchTicket())
   }
 
-  const ticketStatus = () => {
-    if (ticket.date_completed === null) {
-      if (ticket.employee) {
-        return <span className="status--in-progress">In progress</span>
-      }
-      return <span className="status--new">Unclaimed</span>
-    }
-    return <span className="status--completed">Done</span>
-  }
-
   const employeePicker = () => {
     if (isStaff()) {
       return <div className="ticket__employee">
@@ -86,7 +86,7 @@ export const Ticket = () => {
             }
           </div>
           <div className="footerItem">
-            {ticketStatus()}
+            {ticketStatus(ticket)}
           </div>
           {
             isStaff()
