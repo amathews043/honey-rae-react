@@ -51,6 +51,16 @@ export const Ticket = () => {
     updateTicket(updatedTicket).then(() => fetchTicket())
   }
 
+  const completeTicketEvent = () => {
+    const updatedTicket = {
+      ...ticket,
+      date_completed: new Date().toISOString().slice(0, 10), 
+      employee: ticket.employee?.id
+    }
+
+    updateTicket(updatedTicket).then(() => fetchTicket())
+  }
+
   const employeePicker = () => {
     if (isStaff()) {
       return <div className="ticket__employee">
@@ -69,6 +79,11 @@ export const Ticket = () => {
       return <div className="ticket__employee">Assigned to {ticket.employee?.full_name ?? "no one"}</div>
     }
   }
+
+  const staffButtons = () => {
+      return ticket.date_completed ? <> </> : <button onClick={completeTicketEvent}>Mark Done</button>
+    }
+    
 
   return (
     <>
@@ -90,7 +105,7 @@ export const Ticket = () => {
           </div>
           {
             isStaff()
-              ? <></>
+              ? staffButtons()
               : <button onClick={deleteTicketEvent}>Delete</button>
           }
         </footer>
