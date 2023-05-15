@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { isStaff } from "../../utils/isStaff"
 import { TicketCard } from "./TicketCard"
-import { getAllTickets, searchTicketsByStatus } from "../../managers/TicketManager"
+import { getAllTickets, searchTicketsByStatus, searchTicketsByDes } from "../../managers/TicketManager"
 import "./Tickets.css"
 
 export const TicketList = () => {
@@ -10,6 +10,7 @@ export const TicketList = () => {
   const [tickets, setTickets] = useState([])
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     getAllTickets().then((res) => setTickets(res))
@@ -25,9 +26,21 @@ export const TicketList = () => {
     }
   }, [tickets])
 
+  useEffect(() => {
+    if (query.length > 1) {
+      searchDes(query)
+    }
+    else {
+      getAllTickets().then((res) => setTickets(res))
+    }
+  }, [query])
+
   const toShowOrNotToShowTheButton = () => {
     if (isStaff()) {
-      return ""
+      return <div>
+        <input type="text" placeholder="Search by filtering" value={search} onChange={(e) => setSearch(e.target.value)}/> 
+        <input type="text" placeholder="Search by query" value={query} onChange={(e) => setQuery(e.target.value)}/> 
+        </div>
     }
     else {
       return <button className="actions__create"
@@ -39,6 +52,11 @@ export const TicketList = () => {
     searchTicketsByStatus(status).then((res) => setTickets(res))
   }
 
+// The book work wants us to search by sending a request to the server. 
+  const searchDes = (des) => {
+    searchTicketsByDes(des).then((res) => {setTickets(res)})
+  }
+
   // My way of searching 
   const searchTickets = search.length === 0 ? tickets : tickets.filter((ticket) => 
     {
@@ -47,7 +65,6 @@ export const TicketList = () => {
     
 
   return <>
-  <input type="text" placeholder="Search by filtering tickets" value={search} onChange={(e) => setSearch(e.target.value)}/> 
     <div>
       <button onClick={() => filterTickets("done")}>Show Done</button>
       <button onClick={() => filterTickets("all")}>Show All</button>
