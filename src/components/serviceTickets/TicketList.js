@@ -9,6 +9,7 @@ export const TicketList = () => {
   const [active, setActive] = useState("")
   const [tickets, setTickets] = useState([])
   const navigate = useNavigate()
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     getAllTickets().then((res) => setTickets(res))
@@ -38,7 +39,14 @@ export const TicketList = () => {
     searchTicketsByStatus(status).then((res) => setTickets(res))
   }
 
+  const searchTickets = search.length === 0 ? tickets : tickets.filter((ticket) => 
+    {
+      return ticket.description.toLowerCase().includes(search.toLowerCase())
+    })
+    
+
   return <>
+  <input type="text" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/> 
     <div>
       <button onClick={() => filterTickets("done")}>Show Done</button>
       <button onClick={() => filterTickets("all")}>Show All</button>
@@ -49,7 +57,7 @@ export const TicketList = () => {
     <div className="activeTickets">{active}</div>
     <article className="tickets">
       {
-        tickets.map(ticket => (
+        searchTickets.map(ticket => (
           <TicketCard key={`ticket--${ticket.id}`} ticket={ticket} />
         ))
       }
