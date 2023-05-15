@@ -39,6 +39,7 @@ export const TicketList = () => {
     searchTicketsByStatus(status).then((res) => setTickets(res))
   }
 
+  // My way of searching 
   const searchTickets = search.length === 0 ? tickets : tickets.filter((ticket) => 
     {
       return ticket.description.toLowerCase().includes(search.toLowerCase())
@@ -46,7 +47,7 @@ export const TicketList = () => {
     
 
   return <>
-  <input type="text" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)}/> 
+  <input type="text" placeholder="Search by filtering tickets" value={search} onChange={(e) => setSearch(e.target.value)}/> 
     <div>
       <button onClick={() => filterTickets("done")}>Show Done</button>
       <button onClick={() => filterTickets("all")}>Show All</button>
